@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -17,9 +18,13 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.provider.MediaStore;
+import android.widget.RemoteViews;
 
+import com.example.music.R;
 import com.example.music.activities.PlayBackPager;
 import com.example.music.utils.Song;
+import com.squareup.picasso.Picasso;
 
 public class PlayBackPagerService extends Service implements
 MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
@@ -116,18 +121,45 @@ MediaPlayer.OnCompletionListener {
 	@Override
 	public void onPrepared(MediaPlayer mp) {
 		mp.start();
+		RemoteViews remoteViews =new RemoteViews(getPackageName(), R.layout.footer);
 		Intent notIntent = new Intent(this, PlayBackPager.class);
-		notIntent.putExtra("position", songPosn);
+		notIntent.putExtra("notif_pos", songPosn);
+		notIntent.putExtra("CallingActivity", "service");
 		notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		Notification.Builder builder = new Notification.Builder(this);
-		builder.setContentIntent(pendInt)
-		.setSmallIcon(android.R.drawable.ic_media_play)
+		builder.setContentIntent(pendInt).setSmallIcon(android.R.drawable.ic_media_play)
 		.setTicker(songTitle).setOngoing(true)
-		.setContentTitle(songTitle)
-		.setContentText(songs.get(songPosn).getArtist());
+		.setContent(remoteViews);
 		Notification not = builder.build();
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
+                new Intent("NOTIF_PLAY"), 0);
+		remoteViews.setOnClickPendingIntent(R.id.media_play_thumb, pendingIntent);
+		remoteViews.setTextViewText(R.id.song_title_bottom, songTitle);
+		remoteViews.setTextViewText(R.id.song_artist_bottom, songs.get(songPosn).getArtist());
+		try{
+			String[] proj = { MediaStore.Audio.Albums.ALBUM_ART,MediaStore.Audio.Albums._ID };
+			String selection = MediaStore.Audio.Albums.ALBUM + " =? " ;
+			String[] selectionArgs = {songs.get(songPosn).getAlbum()};
+			Cursor cur = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,  proj, selection, selectionArgs, null);
+			int column_index = cur.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ART);
+			cur.moveToFirst();
+			if(cur.getCount()<=0){
+				Picasso.with(getApplicationContext())
+				.load(R.drawable.album_art)
+				.into(remoteViews, R.id.album_thumb, NOTIFY_ID, not);
+			}else{
+				Picasso.with(getApplicationContext())
+				.load(Uri.parse("file:///"+cur.getString(column_index)))
+				.resize(100,100)
+				.noFade().centerCrop()
+				.into(remoteViews, R.id.album_thumb, NOTIFY_ID, not);
+			}
+			cur.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		startForeground(NOTIFY_ID, not);
 	}
 

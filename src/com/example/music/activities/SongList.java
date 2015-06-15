@@ -1,9 +1,11 @@
 package com.example.music.activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -46,9 +48,10 @@ public class SongList extends FragmentActivity{
 	private Intent playIntent = null;
 	public static MusicService musicSrv;
 	private static boolean musicBound = false;
+	private boolean notif_pause = true;
 	private String album; 
 	MyFragmentAdapter mFragmentAdapter;
-	public static Cursor cursor;
+	Cursor cursor = null;
 	private ServiceConnection musicConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -98,7 +101,7 @@ public class SongList extends FragmentActivity{
 		.placeholder(R.drawable.image_loader)
 		.into(AlbumArt);
 		Uri mDataUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String[] mProjection = {MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.DATA,
+		String[] mProjection = {MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM,
 				MediaStore.Audio.Media._ID,MediaStore.Audio.Media.DURATION};
 		String selection = 	android.provider.MediaStore.Audio.Media.ALBUM + " =? ";
 		String[] selectionArgs = new String[]{album};
@@ -133,7 +136,7 @@ public class SongList extends FragmentActivity{
 			public void onPageScrollStateChanged(int arg0) {
 			}
 		});
-		
+
 		footer.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -141,7 +144,7 @@ public class SongList extends FragmentActivity{
 				cursor.move(footer.getCurrentItem());
 				String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
 				System.out.println(MainActivity.songList.indexOf(title));
-				
+
 			}
 		});
 		list.setOnItemClickListener(new OnItemClickListener() {
@@ -153,6 +156,27 @@ public class SongList extends FragmentActivity{
 		});
 
 	}
+
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			notif_pause = !notif_pause;
+			if(!notif_pause){
+				if(musicSrv.isPng())
+					musicSrv.pausePlayer();
+			}else
+				musicSrv.resumePlayer();
+		}
+	};
+
+	@Override
+	protected void onResume() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("NOTIF_PLAY_ALBUM");
+		registerReceiver(receiver, filter);
+		super.onResume();
+	}
+
 	public static Runnable updateSeekBarTime = new Runnable() {
 		public void run(){
 			try{
@@ -167,7 +191,7 @@ public class SongList extends FragmentActivity{
 			}
 		}
 	};
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -181,6 +205,7 @@ public class SongList extends FragmentActivity{
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		unregisterReceiver(receiver);
 		if(musicBound){
 			unbindService(musicConnection);
 			stopService(playIntent);
@@ -203,7 +228,7 @@ public class SongList extends FragmentActivity{
 
 		@Override
 		public Fragment getItem(int pos) {
-			return FooterFragment.newInstance(pos);
+			return FooterFragment.newInstance(pos,cursor);
 		}
 	}
 }

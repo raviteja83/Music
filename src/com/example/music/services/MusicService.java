@@ -14,9 +14,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
+import android.widget.RemoteViews;
 
+import com.example.music.R;
 import com.example.music.activities.PlayBackPager;
 import com.example.music.activities.SongList;
+import com.squareup.picasso.Picasso;
 
 public class MusicService extends Service implements
 MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
@@ -25,7 +28,8 @@ MediaPlayer.OnCompletionListener {
 	private MediaPlayer player;
 	// current position
 	private int songPosn;
-	private static Cursor cursor;
+	Cursor cursor = null;
+	long songId;
 	private final IBinder musicBind = new MusicBinder();
 	private String songTitle = "";
 	private static final int NOTIFY_ID = 1;
@@ -99,34 +103,56 @@ MediaPlayer.OnCompletionListener {
 	@Override
 	public void onPrepared(MediaPlayer mp) {
 		mp.start();
-		System.out.println("==onprepared===");
 		Intent notIntent = new Intent(this, SongList.class);
 		notIntent.putExtra("_ID", SongList.pos);
-		cursor.moveToFirst();
-		cursor.move(songPosn);
 		notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		RemoteViews remoteViews =new RemoteViews(getPackageName(), R.layout.footer);
 		PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		Notification.Builder builder = new Notification.Builder(this);
-			builder.setContentIntent(pendInt).setSmallIcon(android.R.drawable.ic_media_play)
-			.setTicker(songTitle).setOngoing(true)
-			.setContentTitle(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)))
-			.setContentText(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+		builder.setContentIntent(pendInt).setSmallIcon(android.R.drawable.ic_media_play)
+		.setTicker(songTitle).setOngoing(true)
+		.setContent(remoteViews);
 		Notification not = builder.build();
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
+                new Intent("NOTIF_PLAY_ALBUM"), 0);
+		remoteViews.setOnClickPendingIntent(R.id.media_play_thumb, pendingIntent);
+		remoteViews.setTextViewText(R.id.song_title_bottom, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
+		remoteViews.setTextViewText(R.id.song_artist_bottom, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+		try {
+			String album =  cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+			String[] proj = { MediaStore.Audio.Albums.ALBUM_ART,MediaStore.Audio.Albums._ID };
+			String selection =  MediaStore.Audio.Albums._ID + " =? or "+  MediaStore.Audio.Albums.ALBUM + " =? " ;
+			String[] selectionArgs = {String.valueOf(songId),album};
+			Cursor cur =getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,  proj, selection, selectionArgs, null);
+			int column_index = cur.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ART);
+			cur.moveToFirst();
+			Picasso.with(getApplicationContext())
+			.load(Uri.parse("file:///"+cur.getString(column_index)))
+			.resize(100, 100).centerCrop().into(remoteViews, R.id.album_thumb, NOTIFY_ID, not);
+			cur.close();
+		} catch (Exception e) {
+			Picasso.with(getApplicationContext())
+			.load(R.drawable.album_art)
+			.resize(100, 100).centerCrop().into(remoteViews, R.id.album_thumb, NOTIFY_ID, not);
+			e.printStackTrace();
+		}
+		
 		startForeground(NOTIFY_ID, not);
 	}
 
 	public void setSong(int pos) {
 		songPosn = pos;
 	}
-	
+
 	public void playSong(Cursor cur) {
 		// play a song
 		player.reset();
+		cursor = cur;
 		cur.moveToFirst();
 		cur.move(songPosn);
-		long songId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
 		try {
+			songId = cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media._ID));
 			Uri trackUri = ContentUris.withAppendedId(
 					android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
 					songId);
@@ -135,7 +161,7 @@ MediaPlayer.OnCompletionListener {
 			if(PlayBackPager.musicSrv.isPng())
 				PlayBackPager.musicSrv.pausePlayer();
 			timeElapsed = getPosn();
-			finalTime =cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+			finalTime =cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media.DURATION));
 			SongList.playback.setMax((int)finalTime);
 			durationHandler.postDelayed(SongList.updateSeekBarTime, 1000);
 		} catch (Exception e) {
@@ -161,7 +187,7 @@ MediaPlayer.OnCompletionListener {
 	public void resumePlayer() {
 		player.start();
 	}
-	
+
 	public void seek(int posn) {
 		player.seekTo(posn);
 	}

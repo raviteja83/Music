@@ -238,6 +238,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 							int pos, long id) {
 						Intent	intent = new Intent(getActivity(),PlayBackPager.class);
 						intent.putExtra("position",pos);
+						intent.putExtra("CallingActivity","MainActivity");
 						startActivity(intent);
 					}
 				});

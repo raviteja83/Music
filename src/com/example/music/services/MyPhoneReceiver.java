@@ -18,15 +18,15 @@ public class MyPhoneReceiver extends BroadcastReceiver {
 	      String state = extras.getString(TelephonyManager.EXTRA_STATE);
 	      Log.w("MY_DEBUG_TAG", state);
 	      if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-	    	  if(PlayBackPager.musicBound){
+	    	  if(PlayBackPager.musicBound && PlayBackPager.musicSrv.isPng()){
 	    		  PlayBackPager.musicSrv.pausePlayer();
 	    	  }
 	        String phoneNumber = extras
 	            .getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
 	        Log.w("MY_DEBUG_TAG", phoneNumber);
 	      }else if(state.equals(TelephonyManager.EXTRA_STATE_IDLE) ){
-	    	  if(PlayBackPager.musicBound){
-	    		  PlayBackPager.musicSrv.Resume();
+	    	  if(PlayBackPager.musicBound ){
+	    		  PlayBackPager.musicSrv.playSong();
 	    	  }
 	      }
 	    }		

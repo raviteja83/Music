@@ -6,9 +6,8 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,14 +17,15 @@ import com.squareup.picasso.Picasso;
 
 public class FooterFragment extends Fragment{
 	private static final String ARG_POSITION = "position";
-	ImageButton playpause;;
+	ImageView playpause;;
 	public static TextView title_nowplaying,artist_nowplaying;
-	Cursor cursor=null;
+	static Cursor cursor=null;
 	private boolean playbackPaused = false;
-	public static FooterFragment newInstance(int pos) {
+	public static FooterFragment newInstance(int pos,Cursor cur) {
 		FooterFragment fragment = new FooterFragment();
 		Bundle args = new Bundle();
 		args.putInt(ARG_POSITION, pos);
+		cursor = cur;
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -37,7 +37,6 @@ public class FooterFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = null;
-		cursor = SongList.cursor;
 		cursor.moveToFirst();
 		cursor.move(getArguments().getInt(ARG_POSITION));
 		view = inflater.inflate(R.layout.footer, container,
@@ -45,7 +44,7 @@ public class FooterFragment extends Fragment{
 		TextView title = (TextView) view.findViewById(R.id.song_title_bottom);
 		TextView artist = (TextView) view.findViewById(R.id.song_artist_bottom);
 		ImageView songAlbumArt = (ImageView) view.findViewById(R.id.album_thumb);
-		playpause = (ImageButton) view.findViewById(R.id.media_play_thumb);
+		playpause = (ImageView) view.findViewById(R.id.media_play_thumb);
 		playpause.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -59,8 +58,8 @@ public class FooterFragment extends Fragment{
 				}
 			}	
 		});
-		title.setText(SongList.cursor.getString(SongList.cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
-		artist.setText(SongList.cursor.getString(SongList.cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+		title.setText(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
+		artist.setText(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
 		Picasso.with(getActivity())
 		.load(SongList.imageUri)
 		.resize(200,200)

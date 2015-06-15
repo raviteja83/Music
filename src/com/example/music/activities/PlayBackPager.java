@@ -3,7 +3,10 @@ package com.example.music.activities;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
@@ -39,7 +42,7 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 	ImageButton shuff,repeat,like,dislike;
 	public static TextView title_nowplaying,duration,totalDuration,artist_nowplaying;
 	private double finalTime = 0;
-	private boolean paused=true;
+	private boolean paused=true,notif_pause = true;
 	private boolean shuffle=false,re=false;
 	private boolean liked =false,disliked=false;
 	private ArrayList<Song> songs;
@@ -69,7 +72,16 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 				musicSrv.Play(data);
 			}
 		}catch(Exception e){
-			position = intent.getExtras().getInt("position");
+			if(intent.getExtras().getString("CallingActivity").equals("service")){
+				position = intent.getExtras().getInt("notif_pos");
+				musicSrv.setSong(position);
+				musicSrv.Resume();
+			}else{
+				position = intent.getExtras().getInt("position");
+				musicSrv.setSong(position);
+				musicSrv.playSong();
+			}
+
 			myPagerAdapter = new MyPagerFragmentAdapter(getSupportFragmentManager());
 			mPager.setAdapter(myPagerAdapter);
 			mPager.setCurrentItem(position);
@@ -77,15 +89,10 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 			finalTime =currSong.getDuration();
 			totalDuration.setText(String.format("%d : %02d ", TimeUnit.MILLISECONDS.toMinutes((long)finalTime),
 					TimeUnit.MILLISECONDS.toSeconds((long)finalTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) finalTime))));
-			musicSrv.setSong(position);
-			musicSrv.playSong();
+
 			mPager.setOnPageChangeListener(new OnPageChangeListener() {
 				@Override
 				public void onPageSelected(int pos) {
-					getResources().getDrawable(R.drawable.like).setColorFilter( Color.WHITE, Mode.MULTIPLY);
-					like.setImageResource(R.drawable.like);
-					getResources().getDrawable(R.drawable.dislike).setColorFilter( Color.WHITE, Mode.MULTIPLY);
-					dislike.setImageResource(R.drawable.dislike);
 					musicSrv.setSong(pos);
 					musicSrv.playSong();
 				}
@@ -100,7 +107,26 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 		}
 	}
 
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			notif_pause = !notif_pause;
+			if(!notif_pause){
+				if(musicSrv.isPng())
+					musicSrv.pausePlayer();
+			}else
+				musicSrv.Resume();
+		}
+	};
 
+	@Override
+	protected void onResume() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("NOTIF_PLAY");
+		registerReceiver(receiver, filter);
+		super.onResume();
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
