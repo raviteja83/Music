@@ -137,7 +137,6 @@ MediaPlayer.OnCompletionListener {
 			.resize(100, 100).centerCrop().into(remoteViews, R.id.album_thumb, NOTIFY_ID, not);
 			e.printStackTrace();
 		}
-		
 		startForeground(NOTIFY_ID, not);
 	}
 

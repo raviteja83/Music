@@ -118,9 +118,9 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		case 3:
 			mTitle = getString(R.string.title_section3);
 			break;
-		case 4:
+		/*case 4:
 			mTitle = getString(R.string.title_section4);
-			break;
+			break;*/
 		}
 
 	}

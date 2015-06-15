@@ -244,7 +244,7 @@ MediaPlayer.OnCompletionListener {
 			songPosn = newSong;
 			PlayBackPager.mPager.setCurrentItem(songPosn);
 		} else if(repeat) {
-			PlayBackPager.mPager.setCurrentItem(PlayBackPager.mPager.getCurrentItem());
+			PlayBackPager.mPager.setCurrentItem(songPosn);
 		}else {
 			songPosn++;
 			if (songPosn >= songs.size())

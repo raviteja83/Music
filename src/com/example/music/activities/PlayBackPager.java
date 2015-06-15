@@ -128,6 +128,11 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 	}
 	
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(receiver);
+	}
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.like:
