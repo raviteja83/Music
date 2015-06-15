@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Music</string>
+    <string name="title_section2">Albums</string>
+    <string name="title_section1">Songs</string>
+    <string name="title_section3">Artists</string>
+    <string name="title_section4">Playlists</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="search">Search</string>
+    <string name="todo">TODO</string>
+    <string name="title_activity_search_results">SearchResultsActivity</string>
+
+</resources>
