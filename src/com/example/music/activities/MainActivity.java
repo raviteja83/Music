@@ -1,14 +1,18 @@
 package com.example.music.activities;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,36 +27,58 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.music.R;
 import com.example.music.adapters.MyCursorAdapter;
+import com.example.music.adapters.MyFragmentAdapter;
 import com.example.music.fragments.NavigationDrawerFragment;
 import com.example.music.services.PlayBackPagerService;
 import com.example.music.services.PlayBackPagerService.MyPagerAdapterBinder;
 import com.example.music.utils.Artist;
+import com.example.music.utils.DepthPageTransformer;
 import com.example.music.utils.MyProgressDialog;
 import com.example.music.utils.Song;
 import com.example.music.utils.Utils;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 public class MainActivity extends FragmentActivity implements
 NavigationDrawerFragment.NavigationDrawerCallbacks {
 
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private CharSequence mTitle;
+	public static TextView duration,totalDuration;
+	private static Handler durationHandler = new Handler();
+	private static SlidingUpPanelLayout mLayout;
+	private static ImageButton play_pause;
 	public static ArrayList<Song> songList;
 	public static ArrayList<Song> albumList;
+	private static ViewPager mPager;
 	public static ArrayList<Artist> artistList;
+	public static boolean musicBound= false,shuffle = false;
+	public static PlayBackPagerService musicSrv;
 	private Intent playIntent;
+	private static SeekBar playback ;
+	public static double timeElapsed = 0, finalTime = 0,timeRemaining = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,7 +93,15 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
+		try{
+			Intent intent = getIntent();
+			Toast.makeText(this,"launch from notification"+intent.getExtras().getInt("notif_pos"),Toast.LENGTH_SHORT).show();
+			mPager.setCurrentItem(intent.getExtras().getInt("notif_pos"));	
+			mLayout.setPanelState(PanelState.EXPANDED);
 
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	private ServiceConnection musicConnection = new ServiceConnection() {
@@ -75,18 +109,18 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			MyPagerAdapterBinder binder = (MyPagerAdapterBinder) service;
 			// get service
-			PlayBackPager.musicSrv = binder.getService();
-
+			musicSrv = binder.getService();
 			// pass list
-			PlayBackPager.musicSrv.setList(songList);
-			PlayBackPager.musicBound = true;
+			musicSrv.setList(songList);
+			musicBound = true;
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-			PlayBackPager.musicBound = false;
+			musicBound = false;
 		}
 	};
+
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
@@ -98,15 +132,34 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		.addToBackStack(null)
 		.commit();
 	}
+	private BroadcastReceiver receiver  = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(PlayBackPagerService.ACTION_PLAY.equals(intent.getAction())){
+				play_pause.setImageResource(android.R.drawable.ic_media_pause);
+				mPager.setCurrentItem(intent.getExtras().getInt("songPosn"));
+			}else if(PlayBackPagerService.ACTION_RESUME.equals(intent.getAction()))
+				play_pause.setImageResource(android.R.drawable.ic_media_pause);
+			else if(PlayBackPagerService.ACTION_PAUSE.equals(intent.getAction()))
+				play_pause.setImageResource(android.R.drawable.ic_media_play);
+		}
+	};
+
 	@Override
 	protected void onStart() {
 		super.onStart();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(PlayBackPagerService.ACTION_PAUSE);
+		filter.addAction(PlayBackPagerService.ACTION_PLAY);
+		filter.addAction(PlayBackPagerService.ACTION_RESUME);
+		registerReceiver(receiver, filter);
 		if (playIntent == null) {
 			playIntent = new Intent(this, PlayBackPagerService.class);
-			getApplicationContext().bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
-			getApplicationContext().startService(playIntent);
+			bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+			startService(playIntent);
 		}
 	}
+
 	public void onSectionAttached(int number) {
 		switch (number) {
 		case 1:
@@ -118,11 +171,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		case 3:
 			mTitle = getString(R.string.title_section3);
 			break;
-		/*case 4:
-			mTitle = getString(R.string.title_section4);
-			break;*/
 		}
-
 	}
 
 	@SuppressWarnings("deprecation")
@@ -160,19 +209,45 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		return super.onOptionsItemSelected(item);
 	}
 
+	private static Runnable updateSeekBarTime = new Runnable() {
+		public void run(){
+			try{
+				if(musicBound && musicSrv.isPng()){
+					timeElapsed = musicSrv.getPosn();
+					playback.setProgress((int)timeElapsed);
+					//set time remaing
+					timeRemaining = finalTime - timeElapsed;
+					duration.setText(String.format("%d : %02d ", TimeUnit.MILLISECONDS.toMinutes((long)timeRemaining), 
+							TimeUnit.MILLISECONDS.toSeconds((long)timeRemaining) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)timeRemaining))));
+					durationHandler.postDelayed(this, 1000);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	};
+
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if(new Utils(this).isMyServiceRunning(PlayBackPagerService.class) && PlayBackPager.musicBound){
-			getApplicationContext().unbindService(musicConnection);
-			getApplicationContext().stopService(playIntent);
-			PlayBackPager.musicBound = false;
+		if(new Utils(this).isMyServiceRunning(PlayBackPagerService.class) && musicBound){
+			unbindService(musicConnection);
+			stopService(playIntent);
+			musicBound = false;
 		}
+		unregisterReceiver(receiver);
 	}
+
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
-		finish();
+		if (mLayout != null &&
+				(mLayout.getPanelState() == PanelState.EXPANDED || mLayout.getPanelState() == PanelState.ANCHORED)) {
+			mLayout.setPanelState(PanelState.COLLAPSED);
+		} else {
+			super.onBackPressed();
+			finish();
+		}
 	}
 
 	/**
@@ -184,11 +259,14 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		 * fragment.
 		 */
 		private static final String ARG_SECTION_NUMBER = "section_number";
+		private static final String TAG = "DemoActivity";
 		private MyCursorAdapter mAdapter;
 		private static int selection;
-		private Utils utils;
-		ViewPager mPager;
 		private MyProgressDialog bar;
+		private Utils utils;
+		ImageButton shuff,repeat,like,dislike,previous,next;
+		Song CurrSong;
+		private MyFragmentAdapter mFragmentAdapter;
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
@@ -215,6 +293,115 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 			GridView songView;
 			rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
+			mLayout = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
+			mPager = (ViewPager) mLayout.findViewById(R.id.pager);
+			duration  = (TextView) mLayout.findViewById(R.id.songDuration);
+			totalDuration  = (TextView)mLayout.findViewById(R.id.songTotalDuration);
+			((ImageButton) mLayout.findViewById(R.id.media_previous)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					musicSrv.playPrev();
+				}
+			});
+			((ImageButton) mLayout.findViewById(R.id.media_next)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					musicSrv.playNext();
+				}
+			});
+
+			play_pause = (ImageButton) mLayout.findViewById(R.id.media_play_pause);
+			play_pause.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if(musicBound && musicSrv.isPng()){
+						musicSrv.pausePlayer();
+						play_pause.setImageResource(android.R.drawable.ic_media_play);
+					}else if(musicBound ){
+						musicSrv.Resume();
+						play_pause.setImageResource(android.R.drawable.ic_media_pause);
+					}
+				}
+			});
+			//like=(ImageButton) mLayout.findViewById(R.id.like);
+			//dislike=(ImageButton) mLayout.findViewById(R.id.dislike);
+			shuff=(ImageButton) mLayout.findViewById(R.id.shuffle);
+			shuff.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					shuffle=!shuffle;
+					if(shuffle){
+						getResources().getDrawable(R.drawable.shuffle).setColorFilter(getResources().getColor(android.R.color.holo_red_light), Mode.MULTIPLY );
+						shuff.setImageResource(R.drawable.shuffle);
+					}else{
+						getResources().getDrawable(R.drawable.shuffle).setColorFilter( 0xffffffff, Mode.MULTIPLY );
+						shuff.setImageResource(R.drawable.shuffle);
+					}
+					musicSrv.setShuffle();
+
+				}
+			});
+			repeat=(ImageButton) mLayout.findViewById(R.id.repeat);
+			playback = (SeekBar) mLayout.findViewById(R.id.seekBar);
+
+			mPager.setOnPageChangeListener(new OnPageChangeListener() {				
+				@Override
+				public void onPageSelected(int pos) {
+					musicSrv.setSong(pos);
+					playback.setProgress(0);
+					musicSrv.playSong();
+					CurrSong = songList.get(pos);
+					finalTime =CurrSong.getDuration();
+					playback.setMax((int)finalTime);
+					totalDuration.setText(String.format("%d : %02d ", TimeUnit.MILLISECONDS.toMinutes((long)finalTime),
+							TimeUnit.MILLISECONDS.toSeconds((long)finalTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) finalTime))));
+					durationHandler.postDelayed(updateSeekBarTime, 1000);
+
+				}
+
+				@Override
+				public void onPageScrolled(int arg0, float arg1, int arg2) {
+				}
+
+				@Override
+				public void onPageScrollStateChanged(int arg0) {
+				}
+			});
+
+			mPager.setPageTransformer(true, new DepthPageTransformer());
+
+			mLayout.setOnClickListener(new OnClickListener() {			
+				@Override
+				public void onClick(View v) {
+					mLayout.setPanelState(PanelState.EXPANDED);
+				}
+			});
+			mLayout.setPanelSlideListener(new PanelSlideListener() {
+				@Override
+				public void onPanelSlide(View panel, float slideOffset) {
+					if(slideOffset >=0.6f)
+						getActivity().getActionBar().hide();
+				}
+
+				@Override
+				public void onPanelExpanded(View panel) {
+				}
+
+				@Override
+				public void onPanelCollapsed(View panel) {
+					getActivity().getActionBar().show();
+				}
+
+				@Override
+				public void onPanelAnchored(View panel) {
+					Log.i(TAG, "onPanelAnchored");
+				}
+
+				@Override
+				public void onPanelHidden(View panel) {
+					Log.i(TAG, "onPanelHidden");
+				}
+			});
 			songView = (GridView) rootView.findViewById(R.id.song_list);
 			ListView list = (ListView)rootView.findViewById(R.id.song_listView);
 			int[] mToFields = {R.id.song_title,R.id.song_artist};
@@ -236,10 +423,8 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 					@Override
 					public void onItemClick(AdapterView<?> av, View v,
 							int pos, long id) {
-						Intent	intent = new Intent(getActivity(),PlayBackPager.class);
-						intent.putExtra("position",pos);
-						intent.putExtra("CallingActivity","MainActivity");
-						startActivity(intent);
+						mPager.setCurrentItem(pos);
+						//mLayout.setPanelState(PanelState.EXPANDED);
 					}
 				});
 				break;
@@ -357,12 +542,22 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 						mAdapter.changeCursor(arg1);
 				} 
 			}, 2000);
-			if(selection == 1)
+			if(selection == 1){
 				utils.getSongList(arg1);
-			else if(selection ==2)
+
+			}else if(selection ==2){
 				utils.getAlbumList(arg1);
-			else if(selection ==3)
+			}else if(selection ==3)
 				utils.getArtistList(arg1);
+			mFragmentAdapter = new MyFragmentAdapter(getFragmentManager());
+			mPager.setAdapter(mFragmentAdapter);
+			try{
+				if(musicBound && !musicSrv.equals(null)){
+					musicSrv.setList(songList);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 
 		@Override

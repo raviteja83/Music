@@ -77,6 +77,6 @@ public class PagerFragment extends Fragment{
 		.error(R.drawable.album_art)
 		.placeholder(R.drawable.image_loader)
 		.into(artThumb);
-		cursor.close();
+		cursor.close();        
 	}
 }

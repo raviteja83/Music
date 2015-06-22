@@ -2,27 +2,28 @@ package com.example.music.services;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.widget.RemoteViews;
 
 import com.example.music.R;
-import com.example.music.activities.PlayBackPager;
+import com.example.music.activities.MainActivity;
 import com.example.music.utils.Song;
 import com.squareup.picasso.Picasso;
 
@@ -32,7 +33,7 @@ MediaPlayer.OnCompletionListener {
 	// media player
 	private MediaPlayer player;
 	// song list
-	private ArrayList<Song> songs;
+	private static ArrayList<Song> songs;
 	// current position
 	private int songPosn;
 	private final IBinder musicBind = new MyPagerAdapterBinder();
@@ -41,12 +42,16 @@ MediaPlayer.OnCompletionListener {
 	private boolean shuffle = false;
 	private boolean repeat = false;
 	private Random rand;
-	private Handler durationHandler = new Handler();
-	public static double timeElapsed = 0, finalTime = 0,timeRemaining = 0;
+	//private boolean paused =false;
 	public static boolean musicBound = false;
-
+	public static final String ACTION_PAUSE = "com.example.music.Pause";
+	public static final String ACTION_PLAY = "com.example.music.Play";
+	public static final String ACTION_RESUME = "com.example.music.Resume";
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_HEADSET_PLUG);
+		registerReceiver(receiver, filter);
 		return Service.START_NOT_STICKY;
 	}
 	public void onCreate() {
@@ -92,6 +97,7 @@ MediaPlayer.OnCompletionListener {
 
 	@Override
 	public IBinder onBind(Intent arg0) {
+		musicBound = true;
 		return musicBind;
 	}
 
@@ -100,6 +106,7 @@ MediaPlayer.OnCompletionListener {
 		if(player.isPlaying())
 			player.stop();
 		player.release();
+		musicBound = false;
 		return false;
 	}
 
@@ -122,19 +129,19 @@ MediaPlayer.OnCompletionListener {
 	public void onPrepared(MediaPlayer mp) {
 		mp.start();
 		RemoteViews remoteViews =new RemoteViews(getPackageName(), R.layout.footer);
-		Intent notIntent = new Intent(this, PlayBackPager.class);
+		Intent notIntent = new Intent(this, MainActivity.class);
 		notIntent.putExtra("notif_pos", songPosn);
-		notIntent.putExtra("CallingActivity", "service");
-		notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		notIntent.putExtra("notif", "Notification");
+		notIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		Notification.Builder builder = new Notification.Builder(this);
 		builder.setContentIntent(pendInt).setSmallIcon(android.R.drawable.ic_media_play)
-		.setTicker(songTitle).setOngoing(true)
+		.setOngoing(true)
 		.setContent(remoteViews);
 		Notification not = builder.build();
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
-                new Intent("NOTIF_PLAY"), 0);
+				new Intent(ACTION_PAUSE), 0);
 		remoteViews.setOnClickPendingIntent(R.id.media_play_thumb, pendingIntent);
 		remoteViews.setTextViewText(R.id.song_title_bottom, songTitle);
 		remoteViews.setTextViewText(R.id.song_artist_bottom, songs.get(songPosn).getArtist());
@@ -188,15 +195,11 @@ MediaPlayer.OnCompletionListener {
 					currSong);
 			player.setDataSource(getApplicationContext(), trackUri);
 			player.prepareAsync();
-			finalTime =playSong.getDuration();
-			PlayBackPager.totalDuration.setText(String.format("%d : %02d ", TimeUnit.MILLISECONDS.toMinutes((long)finalTime),
-					TimeUnit.MILLISECONDS.toSeconds((long)finalTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) finalTime))));
-			PlayBackPager.playback.setProgress(0);
-			PlayBackPager.playback.setMax((int)finalTime);
-			durationHandler.postDelayed(PlayBackPager.updateSeekBarTime, 1000);
-			PlayBackPager.play_pause.setImageResource(android.R.drawable.ic_media_pause);
+			Intent intent = new Intent(ACTION_PLAY);
+			intent.putExtra("songPosn",songPosn);
+			sendBroadcast(intent);
 		} catch (Exception e) {
-			System.out.println("MUSIC SERVICE playbackpager service Error setting data source"+ e);
+			e.printStackTrace();
 		}
 	}
 
@@ -214,7 +217,8 @@ MediaPlayer.OnCompletionListener {
 
 	public void pausePlayer() {
 		player.pause();
-		PlayBackPager.play_pause.setImageResource(android.R.drawable.ic_media_play);
+		Intent intent = new Intent(ACTION_PAUSE);
+		sendBroadcast(intent);
 	}
 
 	public void seek(int posn) {
@@ -223,15 +227,15 @@ MediaPlayer.OnCompletionListener {
 
 	public void Resume() {
 		player.start();
-		PlayBackPager.play_pause.setImageResource(android.R.drawable.ic_media_pause);
-		durationHandler.postDelayed(PlayBackPager.updateSeekBarTime, 1000);
+		Intent intent = new Intent(ACTION_RESUME);
+		sendBroadcast(intent);
 	}
 
 	public void playPrev() {
 		songPosn--;
 		if (songPosn < 0)
 			songPosn = songs.size() - 1;
-		PlayBackPager.mPager.setCurrentItem(songPosn);
+		playSong();
 	}
 
 	// skip to next
@@ -242,30 +246,31 @@ MediaPlayer.OnCompletionListener {
 				newSong = rand.nextInt(songs.size());
 			}
 			songPosn = newSong;
-			PlayBackPager.mPager.setCurrentItem(songPosn);
 		} else if(repeat) {
-			PlayBackPager.mPager.setCurrentItem(songPosn);
+
 		}else {
 			songPosn++;
 			if (songPosn >= songs.size())
 				songPosn = 0;
-			PlayBackPager.mPager.setCurrentItem(songPosn);
 		}
-
+		playSong();
 	}
 
 	@Override
 	public void onDestroy() {
 		stopForeground(true);
 		stopSelf();
+		unregisterReceiver(receiver);
 	}
-	public void Play(Uri data) {
-		try {
-			player.setDataSource(getApplicationContext(), data);
-			player.prepare();
-		} catch (Exception e) {
-			e.printStackTrace();
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(Intent.ACTION_HEADSET_PLUG.equals(intent.getAction())){
+				if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+					if(musicBound && isPng()) 
+						pausePlayer();
+				}
+			}
 		}
-		
-	}
+	};
 }

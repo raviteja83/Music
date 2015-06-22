@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.music.R;
 
 public class SongListCursorAdapter extends SimpleCursorAdapter{
+	View v;
 	public SongListCursorAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
@@ -27,5 +28,10 @@ public class SongListCursorAdapter extends SimpleCursorAdapter{
 		long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(minutes);
 		duration.setText(String.format("%d : %02d",minutes,seconds));
+	}
+	
+	@Override
+	public Object getItem(int position) {
+		return super.getItem(position);
 	}
 }

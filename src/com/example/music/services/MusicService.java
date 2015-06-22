@@ -17,7 +17,7 @@ import android.provider.MediaStore;
 import android.widget.RemoteViews;
 
 import com.example.music.R;
-import com.example.music.activities.PlayBackPager;
+import com.example.music.activities.MainActivity;
 import com.example.music.activities.SongList;
 import com.squareup.picasso.Picasso;
 
@@ -157,8 +157,8 @@ MediaPlayer.OnCompletionListener {
 					songId);
 			player.setDataSource(getApplicationContext(), trackUri);
 			player.prepareAsync();
-			if(PlayBackPager.musicSrv.isPng())
-				PlayBackPager.musicSrv.pausePlayer();
+			if(MainActivity.musicSrv.isPng())
+				MainActivity.musicSrv.pausePlayer();
 			timeElapsed = getPosn();
 			finalTime =cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media.DURATION));
 			SongList.playback.setMax((int)finalTime);

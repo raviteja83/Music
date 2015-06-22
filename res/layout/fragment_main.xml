@@ -4,21 +4,40 @@
     android:layout_height="match_parent"
     tools:context="com.example.music.activities.MainActivity$PlaceholderFragment" >
 
-    <GridView
-        android:id="@+id/song_list"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:animateLayoutChanges="true"
-        android:horizontalSpacing="10dp"
-        android:numColumns="2"
-        android:scrollbars="none"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp" />
+        android:gravity="bottom"
+        android:background="@android:color/white"
+        sothree:umanoPanelHeight="60dp"
+        sothree:umanoShadowHeight="4dp" >
 
-    <ListView
-        android:id="@+id/song_listView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <GridView
+                android:id="@+id/song_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:animateLayoutChanges="true"
+                android:horizontalSpacing="10dp"
+                android:numColumns="2"
+                android:scrollbars="none"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="10dp" />
+
+            <ListView
+                android:id="@+id/song_listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </FrameLayout>
+        <include layout="@layout/play_back" />
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
 </RelativeLayout>

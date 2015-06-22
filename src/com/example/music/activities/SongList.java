@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -27,7 +28,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
-import android.widget.SimpleCursorAdapter;
 
 import com.example.music.R;
 import com.example.music.adapters.SongListCursorAdapter;
@@ -36,9 +36,9 @@ import com.example.music.services.MusicService;
 import com.example.music.services.MusicService.MusicBinder;
 import com.squareup.picasso.Picasso;
 
+@SuppressLint("InflateParams")
 public class SongList extends FragmentActivity{
-	private SimpleCursorAdapter mAdapter;
-	private ImageView AlbumArt ;
+	private SongListCursorAdapter mAdapter;
 	public static ViewPager footer;
 	public static SeekBar playback;
 	public static int pos;
@@ -49,7 +49,7 @@ public class SongList extends FragmentActivity{
 	public static MusicService musicSrv;
 	private static boolean musicBound = false;
 	private boolean notif_pause = true;
-	private String album; 
+	private String album;
 	MyFragmentAdapter mFragmentAdapter;
 	Cursor cursor = null;
 	private ServiceConnection musicConnection = new ServiceConnection() {
@@ -75,14 +75,14 @@ public class SongList extends FragmentActivity{
 		setContentView(R.layout.activity_song_list);
 		pos = getIntent().getExtras().getInt("_ID");
 		album= MainActivity.albumList.get(pos).getAlbum();
-		AlbumArt = (ImageView) findViewById(R.id.album_image);
 		footer = (ViewPager) findViewById(R.id.footer);
-		list = (ListView) findViewById(R.id.list);
+		list = (ListView) findViewById(android.R.id.list);
 		playback = (SeekBar) findViewById(R.id.seekBar_footer);
-
 		getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 		getActionBar().setHomeAsUpIndicator(R.drawable.back);
 		getActionBar().setDisplayShowTitleEnabled(false);
+		ImageView headerView = (ImageView) ((LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.list_header, null, false);
+		list.addHeaderView(headerView);
 		String[] mFromColumns ={MediaStore.Audio.Media.TITLE,
 				MediaStore.Audio.Media.ARTIST,
 				MediaStore.Audio.Media.DURATION};
@@ -99,7 +99,7 @@ public class SongList extends FragmentActivity{
 		.error(R.drawable.album_art)
 		.noFade().centerCrop()
 		.placeholder(R.drawable.image_loader)
-		.into(AlbumArt);
+		.into(headerView);
 		Uri mDataUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		String[] mProjection = {MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM,
 				MediaStore.Audio.Media._ID,MediaStore.Audio.Media.DURATION};
@@ -112,7 +112,7 @@ public class SongList extends FragmentActivity{
 				selectionArgs,   // No selection arguments
 				null  // Default sort order
 				);
-		mAdapter = new SongListCursorAdapter(this, // current context
+		mAdapter = new SongListCursorAdapter(this, // context
 				R.layout.list_item,//layout
 				cursor,                 //No cursor
 				mFromColumns,        // Cursor columns to use
@@ -151,7 +151,7 @@ public class SongList extends FragmentActivity{
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int position,
 					long id) {
-				footer.setCurrentItem(position);
+				footer.setCurrentItem(position-1);
 			}
 		});
 

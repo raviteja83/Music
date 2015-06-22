@@ -21,7 +21,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int cardBackgroundColor=0x7f010000;
+        public static final int cardBackgroundColor=0x7f01000a;
         /**  Corner radius for CardView. 
          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
@@ -32,7 +32,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int cardCornerRadius=0x7f010001;
+        public static final int cardCornerRadius=0x7f01000b;
         /**  Elevation for CardView. 
          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
@@ -43,7 +43,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int cardElevation=0x7f010002;
+        public static final int cardElevation=0x7f01000c;
         /**  Maximum Elevation for CardView. 
          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
@@ -54,7 +54,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int cardMaxElevation=0x7f010003;
+        public static final int cardMaxElevation=0x7f01000d;
         /**  Add padding to CardView on v20 and before to prevent intersections between the Card content and rounded corners. 
          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
@@ -63,7 +63,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int cardPreventCornerOverlap=0x7f010005;
+        public static final int cardPreventCornerOverlap=0x7f01000f;
         /**  Add padding in API v21+ as well to have the same measurements with previous versions. 
          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
@@ -72,7 +72,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int cardUseCompatPadding=0x7f010004;
+        public static final int cardUseCompatPadding=0x7f01000e;
         /**  Inner padding between the edges of the Card and children of the CardView. 
          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
@@ -83,7 +83,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int contentPadding=0x7f010006;
+        public static final int contentPadding=0x7f010010;
         /**  Inner padding between the bottom edge of the Card and children of the CardView. 
          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
@@ -94,7 +94,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int contentPaddingBottom=0x7f01000a;
+        public static final int contentPaddingBottom=0x7f010014;
         /**  Inner padding between the left edge of the Card and children of the CardView. 
          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
@@ -105,7 +105,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int contentPaddingLeft=0x7f010007;
+        public static final int contentPaddingLeft=0x7f010011;
         /**  Inner padding between the right edge of the Card and children of the CardView. 
          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
@@ -116,7 +116,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int contentPaddingRight=0x7f010008;
+        public static final int contentPaddingRight=0x7f010012;
         /**  Inner padding between the top edge of the Card and children of the CardView. 
          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
@@ -127,11 +127,11 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int contentPaddingTop=0x7f010009;
+        public static final int contentPaddingTop=0x7f010013;
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
-        public static final int header=0x7f01000b;
+        public static final int header=0x7f010015;
         /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
 in (inches), mm (millimeters).
@@ -141,7 +141,7 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int headerHeight=0x7f01000c;
+        public static final int headerHeight=0x7f010016;
         /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
 Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
 in (inches), mm (millimeters).
@@ -151,7 +151,95 @@ theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
          */
-        public static final int headerVisibleHeight=0x7f01000d;
+        public static final int headerVisibleHeight=0x7f010017;
+        /** <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int umanoAnchorPoint=0x7f010008;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int umanoClipPanel=0x7f010007;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int umanoDragView=0x7f010005;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int umanoFadeColor=0x7f010003;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int umanoFlingVelocity=0x7f010004;
+        /** <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>expanded</code></td><td>0</td><td></td></tr>
+<tr><td><code>collapsed</code></td><td>1</td><td></td></tr>
+<tr><td><code>anchored</code></td><td>2</td><td></td></tr>
+<tr><td><code>hidden</code></td><td>3</td><td></td></tr>
+</table>
+         */
+        public static final int umanoInitialState=0x7f010009;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int umanoOverlay=0x7f010006;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int umanoPanelHeight=0x7f010000;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int umanoParalaxOffset=0x7f010002;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int umanoShadowHeight=0x7f010001;
     }
     public static final class color {
         /**  Background color for dark CardView. 
@@ -195,68 +283,73 @@ containing a value of this type.
         public static final int navigation_drawer_width=0x7f070005;
     }
     public static final class drawable {
-        public static final int album_art=0x7f020000;
-        public static final int back=0x7f020001;
-        public static final int back_dark=0x7f020002;
-        public static final int border=0x7f020003;
-        public static final int dislike=0x7f020004;
-        public static final int ic_action_search=0x7f020005;
-        public static final int ic_drawer=0x7f020006;
-        public static final int ic_launcher=0x7f020007;
-        public static final int image_loader=0x7f020008;
-        public static final int like=0x7f020009;
-        public static final int progressbar=0x7f02000a;
-        public static final int progressfooter=0x7f02000b;
-        public static final int repeat=0x7f02000c;
-        public static final int shuffle=0x7f02000d;
+        public static final int above_shadow=0x7f020000;
+        public static final int album_art=0x7f020001;
+        public static final int back=0x7f020002;
+        public static final int back_dark=0x7f020003;
+        public static final int below_shadow=0x7f020004;
+        public static final int border=0x7f020005;
+        public static final int dislike=0x7f020006;
+        public static final int ic_action_search=0x7f020007;
+        public static final int ic_drawer=0x7f020008;
+        public static final int ic_launcher=0x7f020009;
+        public static final int image_loader=0x7f02000a;
+        public static final int like=0x7f02000b;
+        public static final int progressbar=0x7f02000c;
+        public static final int progressfooter=0x7f02000d;
+        public static final int repeat=0x7f02000e;
+        public static final int shuffle=0x7f02000f;
     }
     public static final class id {
-        public static final int action_search=0x7f0b002d;
-        public static final int album_image=0x7f0b0005;
-        public static final int album_image_thumb=0x7f0b0017;
-        public static final int album_song_artist=0x7f0b001a;
-        public static final int album_song_duration=0x7f0b001b;
-        public static final int album_song_title=0x7f0b0019;
-        public static final int album_thumb=0x7f0b000c;
-        public static final int anim_image=0x7f0b000b;
-        public static final int art_thumb=0x7f0b0013;
-        public static final int container=0x7f0b0001;
-        public static final int dislike=0x7f0b0020;
-        public static final int drawer_layout=0x7f0b0000;
-        public static final int dur=0x7f0b001e;
-        public static final int footer=0x7f0b0007;
-        public static final int footer_ll=0x7f0b000d;
-        public static final int icon=0x7f0b0009;
-        public static final int likdis=0x7f0b001d;
-        public static final int like=0x7f0b001f;
-        public static final int list=0x7f0b0006;
-        public static final int ll=0x7f0b0024;
-        public static final int media_next=0x7f0b0028;
-        public static final int media_play_pause=0x7f0b0027;
-        public static final int media_play_thumb=0x7f0b0010;
-        public static final int media_previous=0x7f0b0026;
-        public static final int mp3Image=0x7f0b0016;
-        public static final int navigation_drawer=0x7f0b0002;
-        public static final int pager=0x7f0b001c;
-        public static final int repeat=0x7f0b0029;
-        public static final int scroll_view=0x7f0b0004;
-        public static final int seekBar=0x7f0b0023;
-        public static final int seekBar_footer=0x7f0b0008;
-        public static final int shuffle=0x7f0b0025;
-        public static final int songDuration=0x7f0b0021;
-        public static final int songTotalDuration=0x7f0b0022;
-        public static final int song_album_art=0x7f0b002a;
-        public static final int song_artist=0x7f0b002c;
-        public static final int song_artist_bottom=0x7f0b000f;
-        public static final int song_list=0x7f0b0003;
-        public static final int song_listView=0x7f0b0011;
-        public static final int song_title=0x7f0b002b;
-        public static final int song_title_bottom=0x7f0b000e;
-        public static final int songartist=0x7f0b0015;
-        public static final int songlist_ll=0x7f0b0018;
-        public static final int songtitle=0x7f0b0014;
-        public static final int text1=0x7f0b000a;
-        public static final int title_frame=0x7f0b0012;
+        public static final int action_search=0x7f0b0030;
+        public static final int album_image=0x7f0b0019;
+        public static final int album_image_thumb=0x7f0b001a;
+        public static final int album_song_artist=0x7f0b001d;
+        public static final int album_song_duration=0x7f0b001e;
+        public static final int album_song_title=0x7f0b001c;
+        public static final int album_thumb=0x7f0b000d;
+        public static final int anchored=0x7f0b0000;
+        public static final int anim_image=0x7f0b000c;
+        public static final int art_thumb=0x7f0b0015;
+        public static final int collapsed=0x7f0b0001;
+        public static final int container=0x7f0b0005;
+        public static final int dislike=0x7f0b0023;
+        public static final int drawer_layout=0x7f0b0004;
+        public static final int dur=0x7f0b0021;
+        public static final int expanded=0x7f0b0002;
+        public static final int footer=0x7f0b0008;
+        public static final int footer_ll=0x7f0b000e;
+        public static final int hidden=0x7f0b0003;
+        public static final int icon=0x7f0b000a;
+        public static final int likdis=0x7f0b0020;
+        public static final int like=0x7f0b0022;
+        public static final int ll=0x7f0b0027;
+        public static final int media_next=0x7f0b002b;
+        public static final int media_play_pause=0x7f0b002a;
+        public static final int media_play_thumb=0x7f0b0011;
+        public static final int media_previous=0x7f0b0029;
+        public static final int mp3Image=0x7f0b0018;
+        public static final int navigation_drawer=0x7f0b0006;
+        public static final int pager=0x7f0b001f;
+        public static final int repeat=0x7f0b002c;
+        public static final int seekBar=0x7f0b0026;
+        public static final int seekBar_footer=0x7f0b0009;
+        public static final int shuffle=0x7f0b0028;
+        public static final int sliding_layout=0x7f0b0012;
+        public static final int songDuration=0x7f0b0024;
+        public static final int songTotalDuration=0x7f0b0025;
+        public static final int song_album_art=0x7f0b002d;
+        public static final int song_artist=0x7f0b002f;
+        public static final int song_artist_bottom=0x7f0b0010;
+        public static final int song_list=0x7f0b0007;
+        public static final int song_listView=0x7f0b0013;
+        public static final int song_title=0x7f0b002e;
+        public static final int song_title_bottom=0x7f0b000f;
+        public static final int songartist=0x7f0b0017;
+        public static final int songlist_ll=0x7f0b001b;
+        public static final int songtitle=0x7f0b0016;
+        public static final int text1=0x7f0b000b;
+        public static final int title_frame=0x7f0b0014;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -268,26 +361,26 @@ containing a value of this type.
         public static final int fragment_main=0x7f030006;
         public static final int fragment_navigation_drawer=0x7f030007;
         public static final int fragment_pager=0x7f030008;
-        public static final int list_item=0x7f030009;
-        public static final int play_back=0x7f03000a;
-        public static final int song=0x7f03000b;
+        public static final int list_header=0x7f030009;
+        public static final int list_item=0x7f03000a;
+        public static final int play_back=0x7f03000b;
+        public static final int song=0x7f03000c;
     }
     public static final class menu {
         public static final int global=0x7f0a0000;
         public static final int search_results=0x7f0a0001;
     }
     public static final class string {
-        public static final int action_example=0x7f090007;
+        public static final int action_example=0x7f090006;
         public static final int app_name=0x7f090000;
-        public static final int navigation_drawer_close=0x7f090006;
-        public static final int navigation_drawer_open=0x7f090005;
-        public static final int search=0x7f090008;
-        public static final int title_activity_search_results=0x7f09000a;
+        public static final int navigation_drawer_close=0x7f090005;
+        public static final int navigation_drawer_open=0x7f090004;
+        public static final int search=0x7f090007;
+        public static final int title_activity_search_results=0x7f090009;
         public static final int title_section1=0x7f090002;
         public static final int title_section2=0x7f090001;
         public static final int title_section3=0x7f090003;
-        public static final int title_section4=0x7f090004;
-        public static final int todo=0x7f090009;
+        public static final int todo=0x7f090008;
     }
     public static final class style {
         /** 
@@ -366,9 +459,9 @@ containing a value of this type.
            @see #CardView_contentPaddingTop
          */
         public static final int[] CardView = {
-            0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003,
-            0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007,
-            0x7f010008, 0x7f010009, 0x7f01000a
+            0x7f01000a, 0x7f01000b, 0x7f01000c, 0x7f01000d,
+            0x7f01000e, 0x7f01000f, 0x7f010010, 0x7f010011,
+            0x7f010012, 0x7f010013, 0x7f010014
         };
         /**
           <p>
@@ -578,7 +671,7 @@ containing a value of this type.
            @see #PullScrollView_headerVisibleHeight
          */
         public static final int[] PullScrollView = {
-            0x7f01000b, 0x7f01000c, 0x7f01000d
+            0x7f010015, 0x7f010016, 0x7f010017
         };
         /**
           <p>This symbol is the offset where the {@link com.example.music.R.attr#header}
@@ -622,5 +715,186 @@ containing a value of this type.
           @attr name com.example.music:headerVisibleHeight
         */
         public static final int PullScrollView_headerVisibleHeight = 2;
+        /** Attributes that can be used with a SlidingUpPanelLayout.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoAnchorPoint com.example.music:umanoAnchorPoint}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoClipPanel com.example.music:umanoClipPanel}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoDragView com.example.music:umanoDragView}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoFadeColor com.example.music:umanoFadeColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoFlingVelocity com.example.music:umanoFlingVelocity}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoInitialState com.example.music:umanoInitialState}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoOverlay com.example.music:umanoOverlay}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoPanelHeight com.example.music:umanoPanelHeight}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoParalaxOffset com.example.music:umanoParalaxOffset}</code></td><td></td></tr>
+           <tr><td><code>{@link #SlidingUpPanelLayout_umanoShadowHeight com.example.music:umanoShadowHeight}</code></td><td></td></tr>
+           </table>
+           @see #SlidingUpPanelLayout_umanoAnchorPoint
+           @see #SlidingUpPanelLayout_umanoClipPanel
+           @see #SlidingUpPanelLayout_umanoDragView
+           @see #SlidingUpPanelLayout_umanoFadeColor
+           @see #SlidingUpPanelLayout_umanoFlingVelocity
+           @see #SlidingUpPanelLayout_umanoInitialState
+           @see #SlidingUpPanelLayout_umanoOverlay
+           @see #SlidingUpPanelLayout_umanoPanelHeight
+           @see #SlidingUpPanelLayout_umanoParalaxOffset
+           @see #SlidingUpPanelLayout_umanoShadowHeight
+         */
+        public static final int[] SlidingUpPanelLayout = {
+            0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003,
+            0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007,
+            0x7f010008, 0x7f010009
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoAnchorPoint}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be a floating point value, such as "<code>1.2</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.music:umanoAnchorPoint
+        */
+        public static final int SlidingUpPanelLayout_umanoAnchorPoint = 8;
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoClipPanel}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.music:umanoClipPanel
+        */
+        public static final int SlidingUpPanelLayout_umanoClipPanel = 7;
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoDragView}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name com.example.music:umanoDragView
+        */
+        public static final int SlidingUpPanelLayout_umanoDragView = 5;
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoFadeColor}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.music:umanoFadeColor
+        */
+        public static final int SlidingUpPanelLayout_umanoFadeColor = 3;
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoFlingVelocity}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.music:umanoFlingVelocity
+        */
+        public static final int SlidingUpPanelLayout_umanoFlingVelocity = 4;
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoInitialState}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>expanded</code></td><td>0</td><td></td></tr>
+<tr><td><code>collapsed</code></td><td>1</td><td></td></tr>
+<tr><td><code>anchored</code></td><td>2</td><td></td></tr>
+<tr><td><code>hidden</code></td><td>3</td><td></td></tr>
+</table>
+          @attr name com.example.music:umanoInitialState
+        */
+        public static final int SlidingUpPanelLayout_umanoInitialState = 9;
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoOverlay}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.music:umanoOverlay
+        */
+        public static final int SlidingUpPanelLayout_umanoOverlay = 6;
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoPanelHeight}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.music:umanoPanelHeight
+        */
+        public static final int SlidingUpPanelLayout_umanoPanelHeight = 0;
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoParalaxOffset}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.music:umanoParalaxOffset
+        */
+        public static final int SlidingUpPanelLayout_umanoParalaxOffset = 2;
+        /**
+          <p>This symbol is the offset where the {@link com.example.music.R.attr#umanoShadowHeight}
+          attribute's value can be found in the {@link #SlidingUpPanelLayout} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.music:umanoShadowHeight
+        */
+        public static final int SlidingUpPanelLayout_umanoShadowHeight = 1;
     };
 }

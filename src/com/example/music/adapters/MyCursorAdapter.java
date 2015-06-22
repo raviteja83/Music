@@ -20,9 +20,17 @@ public class MyCursorAdapter extends SimpleCursorAdapter{
 	}
 
 	public void bindView(View view, Context context, Cursor cursor) {
+		//int lastPosition =-1;
+		//int position = cursor.getPosition();
 		ImageView imageView = (ImageView) view.findViewById(R.id.song_album_art);
 		TextView album = (TextView) view.findViewById(R.id.song_title);
 		TextView artist = (TextView) view.findViewById(R.id.song_artist);
+		/*if(position > lastPosition){
+			Animation animation = AnimationUtils.loadAnimation(context,R.animator.up_from_bottom);
+			view.startAnimation(animation);
+		}
+		lastPosition = position;*/
+
 		switch (FLAG) {
 		case 1:
 			ImageView art_thumb = (ImageView) view.findViewById(R.id.album_image_thumb);

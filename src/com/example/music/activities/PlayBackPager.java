@@ -1,6 +1,5 @@
 package com.example.music.activities;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import android.content.BroadcastReceiver;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -32,20 +30,17 @@ import com.example.music.utils.Song;
 
 public class PlayBackPager extends FragmentActivity implements OnClickListener{
 	private int position;
-	public static PlayBackPagerService musicSrv;
-	public static boolean musicBound = false;
-	public static ViewPager mPager;
+	ViewPager mPager;
 	MyPagerFragmentAdapter myPagerAdapter;
-	public static SeekBar playback ;
+	private static SeekBar playback ;
 	private static Handler durationHandler = new Handler();
-	public static ImageButton  play_pause;
-	ImageButton shuff,repeat,like,dislike;
+	ImageButton shuff,repeat,like,dislike,play_pause;
 	public static TextView title_nowplaying,duration,totalDuration,artist_nowplaying;
-	private double finalTime = 0;
-	private boolean paused=true,notif_pause = true;
+	private boolean paused=true;
+	//notif_pause = true;
+	private static double timeElapsed = 0, finalTime = 0,timeRemaining = 0;
 	private boolean shuffle=false,re=false;
 	private boolean liked =false,disliked=false;
-	private ArrayList<Song> songs;
 	private Song currSong;
 
 	@Override
@@ -63,38 +58,23 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 		(shuff=(ImageButton) findViewById(R.id.shuffle)).setOnClickListener(this);
 		(repeat=(ImageButton) findViewById(R.id.repeat)).setOnClickListener(this);
 		playback = (SeekBar) findViewById(R.id.seekBar);
-		songs = MainActivity.songList;
 		Intent intent = getIntent();
-		Uri data = intent.getData();
 		try{
-			if(!data.equals(null)){
-				System.out.println(data);
-				musicSrv.Play(data);
-			}
-		}catch(Exception e){
-			if(intent.getExtras().getString("CallingActivity").equals("service")){
-				position = intent.getExtras().getInt("notif_pos");
-				musicSrv.setSong(position);
-				musicSrv.Resume();
-			}else{
-				position = intent.getExtras().getInt("position");
-				musicSrv.setSong(position);
-				musicSrv.playSong();
-			}
-
+			position = intent.getExtras().getInt("notif_pos");
 			myPagerAdapter = new MyPagerFragmentAdapter(getSupportFragmentManager());
 			mPager.setAdapter(myPagerAdapter);
 			mPager.setCurrentItem(position);
-			currSong = songs.get(position);
-			finalTime =currSong.getDuration();
-			totalDuration.setText(String.format("%d : %02d ", TimeUnit.MILLISECONDS.toMinutes((long)finalTime),
-					TimeUnit.MILLISECONDS.toSeconds((long)finalTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) finalTime))));
-
 			mPager.setOnPageChangeListener(new OnPageChangeListener() {
 				@Override
 				public void onPageSelected(int pos) {
-					musicSrv.setSong(pos);
-					musicSrv.playSong();
+					System.out.println("==="+pos);
+					currSong = MainActivity.songList.get(pos);
+					finalTime =currSong.getDuration();
+					totalDuration.setText(String.format("%d : %02d ", TimeUnit.MILLISECONDS.toMinutes((long)finalTime),
+							TimeUnit.MILLISECONDS.toSeconds((long)finalTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) finalTime))));
+					playback.setMax((int)finalTime);
+					durationHandler.postDelayed(updateSeekBarTime, 1000);
+					play_pause.setImageResource(android.R.drawable.ic_media_pause);
 				}
 				@Override
 				public void onPageScrolled(int pos, float arg1, int arg2) {
@@ -104,34 +84,39 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 				}
 			});
 			mPager.setPageTransformer(true, new DepthPageTransformer());
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
-
-	private BroadcastReceiver receiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			notif_pause = !notif_pause;
-			if(!notif_pause){
-				if(musicSrv.isPng())
-					musicSrv.pausePlayer();
-			}else
-				musicSrv.Resume();
-		}
-	};
-
 	@Override
-	protected void onResume() {
+	protected void onStart() {
+		super.onStart();
 		IntentFilter filter = new IntentFilter();
-		filter.addAction("NOTIF_PLAY");
+		filter.addAction(PlayBackPagerService.ACTION_PAUSE);
+		filter.addAction(PlayBackPagerService.ACTION_PLAY);
+		filter.addAction(PlayBackPagerService.ACTION_RESUME);
 		registerReceiver(receiver, filter);
-		super.onResume();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(receiver);
 	}
+	private BroadcastReceiver receiver  = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(PlayBackPagerService.ACTION_PLAY.equals(intent.getAction())){
+				play_pause.setImageResource(android.R.drawable.ic_media_pause);
+				mPager.setCurrentItem(intent.getExtras().getInt("songPosn"));
+			}else if(PlayBackPagerService.ACTION_RESUME.equals(intent.getAction()))
+				play_pause.setImageResource(android.R.drawable.ic_media_pause);
+			if(PlayBackPagerService.ACTION_PAUSE.equals(intent.getAction()))
+				play_pause.setImageResource(android.R.drawable.ic_media_play);
+
+		}
+	};
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -146,27 +131,25 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 		case R.id.dislike:
 			disliked = !disliked;
 			if(disliked){
-				PlayBackPager.mPager.setCurrentItem(PlayBackPager.mPager.getCurrentItem()+1);
+				mPager.setCurrentItem(mPager.getCurrentItem()+1);
 				getResources().getDrawable(R.drawable.dislike).setColorFilter(getResources().getColor(android.R.color.holo_red_light), Mode.MULTIPLY );
 			}else
 				getResources().getDrawable(R.drawable.dislike).setColorFilter( 0xffffffff, Mode.MULTIPLY );
 			dislike.setImageResource(R.drawable.dislike);
 			break;
 		case R.id.media_next:
-			musicSrv.playNext();
+			MainActivity.musicSrv.playNext();
 			break;
 		case R.id.media_play_pause:
 			paused = !paused;
-			if(musicBound && paused){
-				musicSrv.Resume();
+			if(MainActivity.musicBound && paused){
 				play_pause.setImageResource(android.R.drawable.ic_media_pause);
 			}else{
-				musicSrv.pausePlayer();
 				play_pause.setImageResource(android.R.drawable.ic_media_play);
 			}
 			break;
 		case R.id.media_previous:
-			musicSrv.playPrev();
+			MainActivity.musicSrv.playPrev();
 			break;
 		case R.id.shuffle:
 			shuffle=!shuffle;
@@ -177,7 +160,7 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 				getResources().getDrawable(R.drawable.shuffle).setColorFilter( 0xffffffff, Mode.MULTIPLY );
 				shuff.setImageResource(R.drawable.shuffle);
 			}
-			musicSrv.setShuffle();
+			MainActivity.musicSrv.setShuffle();
 			break;
 		case R.id.repeat:
 			re = !re;
@@ -188,22 +171,22 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 				getResources().getDrawable(R.drawable.repeat).setColorFilter( 0xffffffff, Mode.MULTIPLY );
 				repeat.setImageResource(R.drawable.repeat);
 			}
-			musicSrv.setRepeat();
+			MainActivity.musicSrv.setRepeat();
 		default:
 			break;
 		}
 	}
 
-	public static Runnable updateSeekBarTime = new Runnable() {
+	private static Runnable updateSeekBarTime = new Runnable() {
 		public void run(){
 			try{
-				if(musicBound && musicSrv.isPng()){
-					PlayBackPagerService.timeElapsed = musicSrv.getPosn();
-					playback.setProgress((int)PlayBackPagerService.timeElapsed);
+				if(MainActivity.musicBound && MainActivity.musicSrv.isPng()){
+					timeElapsed = MainActivity.musicSrv.getPosn();
+					playback.setProgress((int)timeElapsed);
 					//set time remaing
-					PlayBackPagerService.timeRemaining = PlayBackPagerService.finalTime - PlayBackPagerService.timeElapsed;
-					duration.setText(String.format("%d : %02d ", TimeUnit.MILLISECONDS.toMinutes((long) PlayBackPagerService.timeRemaining), 
-							TimeUnit.MILLISECONDS.toSeconds((long) PlayBackPagerService.timeRemaining) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) PlayBackPagerService.timeRemaining))));
+					timeRemaining = finalTime - timeElapsed;
+					duration.setText(String.format("%d : %02d ", TimeUnit.MILLISECONDS.toMinutes((long)timeRemaining), 
+							TimeUnit.MILLISECONDS.toSeconds((long) timeRemaining) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining))));
 					durationHandler.postDelayed(this, 1000);
 				}
 			}catch(Exception e){
@@ -211,7 +194,6 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 			}
 		}
 	};
-
 	private class MyPagerFragmentAdapter extends FragmentStatePagerAdapter  {
 		public MyPagerFragmentAdapter(FragmentManager fm) {
 			super(fm);
@@ -223,7 +205,7 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 
 		@Override
 		public Fragment getItem(int pos) {
-			return PagerFragment.newInstance(pos);
+			return PagerFragment.newInstance(position);
 		}
 	}
 }
