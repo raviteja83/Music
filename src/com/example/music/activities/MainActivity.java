@@ -3,6 +3,7 @@ package com.example.music.activities;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -43,7 +44,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.music.R;
 import com.example.music.adapters.MyCursorAdapter;
@@ -69,9 +69,9 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 	private static Handler durationHandler = new Handler();
 	private static SlidingUpPanelLayout mLayout;
 	private static ImageButton play_pause;
+	private static ViewPager mPager;
 	public static ArrayList<Song> songList;
 	public static ArrayList<Song> albumList;
-	private static ViewPager mPager;
 	public static ArrayList<Artist> artistList;
 	public static boolean musicBound= false,shuffle = false;
 	public static PlayBackPagerService musicSrv;
@@ -79,6 +79,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 	private static SeekBar playback ;
 	public static double timeElapsed = 0, finalTime = 0,timeRemaining = 0;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -95,10 +96,8 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		try{
 			Intent intent = getIntent();
-			Toast.makeText(this,"launch from notification"+intent.getExtras().getInt("notif_pos"),Toast.LENGTH_SHORT).show();
 			mPager.setCurrentItem(intent.getExtras().getInt("notif_pos"));	
 			mLayout.setPanelState(PanelState.EXPANDED);
-
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -132,19 +131,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		.addToBackStack(null)
 		.commit();
 	}
-	private BroadcastReceiver receiver  = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if(PlayBackPagerService.ACTION_PLAY.equals(intent.getAction())){
-				play_pause.setImageResource(android.R.drawable.ic_media_pause);
-				mPager.setCurrentItem(intent.getExtras().getInt("songPosn"));
-			}else if(PlayBackPagerService.ACTION_RESUME.equals(intent.getAction()))
-				play_pause.setImageResource(android.R.drawable.ic_media_pause);
-			else if(PlayBackPagerService.ACTION_PAUSE.equals(intent.getAction()))
-				play_pause.setImageResource(android.R.drawable.ic_media_play);
-		}
-	};
-
+	
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -238,6 +225,20 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		}
 		unregisterReceiver(receiver);
 	}
+	
+	private BroadcastReceiver receiver  = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(PlayBackPagerService.ACTION_PLAY.equals(intent.getAction())){
+				play_pause.setImageResource(android.R.drawable.ic_media_pause);
+				mPager.setCurrentItem(intent.getExtras().getInt("songPosn"));
+			}else if(PlayBackPagerService.ACTION_RESUME.equals(intent.getAction())){
+				play_pause.setImageResource(android.R.drawable.ic_media_pause);
+				durationHandler.postDelayed(updateSeekBarTime, 1000);
+			}else if(PlayBackPagerService.ACTION_PAUSE.equals(intent.getAction()))
+				play_pause.setImageResource(android.R.drawable.ic_media_play);
+		}
+	};
 
 	@Override
 	public void onBackPressed() {
@@ -264,6 +265,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		private static int selection;
 		private MyProgressDialog bar;
 		private Utils utils;
+		
 		ImageButton shuff,repeat,like,dislike,previous,next;
 		Song CurrSong;
 		private MyFragmentAdapter mFragmentAdapter;
@@ -284,8 +286,11 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 			getLoaderManager().initLoader(selection, null, this);
 			bar = new MyProgressDialog(getActivity());
 			bar.show();
+			
 			setRetainInstance(true);
 		}
+		
+		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -335,10 +340,9 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 						shuff.setImageResource(R.drawable.shuffle);
 					}else{
 						getResources().getDrawable(R.drawable.shuffle).setColorFilter( 0xffffffff, Mode.MULTIPLY );
-						shuff.setImageResource(R.drawable.shuffle);
+						mFragmentAdapter.notifyDataSetChanged();
 					}
 					musicSrv.setShuffle();
-
 				}
 			});
 			repeat=(ImageButton) mLayout.findViewById(R.id.repeat);
@@ -403,7 +407,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 				}
 			});
 			songView = (GridView) rootView.findViewById(R.id.song_list);
-			ListView list = (ListView)rootView.findViewById(R.id.song_listView);
+			ListView list = (ListView)rootView.findViewById(android.R.id.list);
 			int[] mToFields = {R.id.song_title,R.id.song_artist};
 			int[] mToColumns = {R.id.album_song_title,R.id.album_song_artist};
 			switch (selection) {
@@ -472,7 +476,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 			}
 			return rootView;
 		}
-
+		
 		@Override
 		public void onAttach(Activity activity) {
 			super.onAttach(activity);

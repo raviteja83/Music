@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:choiceMode="singleChoice"
+    android:layout_marginTop="?android:attr/actionBarSize"
     android:background="@android:color/background_light"
     tools:context="com.example.music.fragments.NavigationDrawerFragment" >
 </ListView>

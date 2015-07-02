@@ -1,5 +1,6 @@
 package com.example.music.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
 import com.example.music.R;
 import com.example.music.adapters.MySimpleAdapter;
 
@@ -28,6 +28,7 @@ import com.example.music.adapters.MySimpleAdapter;
  * > design guidelines</a> for a complete explanation of the behaviors
  * implemented here.
  */
+@SuppressLint("NewApi")
 @SuppressWarnings("deprecation")
 public class NavigationDrawerFragment extends Fragment {
 
@@ -156,13 +157,13 @@ public class NavigationDrawerFragment extends Fragment {
 										 * accessibility
 										 */
 		) {
+			@SuppressLint("NewApi")
 			@Override
 			public void onDrawerClosed(View drawerView) {
 				super.onDrawerClosed(drawerView);
 				if (!isAdded()) {
 					return;
 				}
-
 				getActivity().invalidateOptionsMenu(); // calls
 														// onPrepareOptionsMenu()
 			}
@@ -184,7 +185,7 @@ public class NavigationDrawerFragment extends Fragment {
 					sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true)
 							.apply();
 				}
-
+				
 				getActivity().invalidateOptionsMenu(); // calls
 														// onPrepareOptionsMenu()
 			}
@@ -205,7 +206,7 @@ public class NavigationDrawerFragment extends Fragment {
 			}
 		});
 
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		//mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
 
 	private void selectItem(int position) {

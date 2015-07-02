@@ -265,11 +265,9 @@ MediaPlayer.OnCompletionListener {
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(Intent.ACTION_HEADSET_PLUG.equals(intent.getAction())){
-				if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
-					if(musicBound && isPng()) 
-						pausePlayer();
-				}
+			if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+				if(musicBound && isPng()) 
+					pausePlayer();
 			}
 		}
 	};

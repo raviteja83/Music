@@ -41,9 +41,7 @@ public class SearchResultsActivity extends Activity implements LoaderCallbacks<C
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.back_dark));
-		GridView list;
-
-		list = (GridView)findViewById(R.id.song_list);
+		GridView list = (GridView)findViewById(R.id.song_list);
 		empty = (TextView)findViewById(android.R.id.empty);
 		String[] mFromColumns={ MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM };
 		int[] mToFields = {R.id.song_title,R.id.song_artist};
@@ -60,10 +58,11 @@ public class SearchResultsActivity extends Activity implements LoaderCallbacks<C
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
 					long arg3) {
-				
+
 			}
 		});
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.search_results, menu);
@@ -71,6 +70,7 @@ public class SearchResultsActivity extends Activity implements LoaderCallbacks<C
 				(SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		SearchView searchView =
 				(SearchView) menu.findItem(R.id.action_search).getActionView();
+		searchView.setIconified(false);
 		searchView.setSearchableInfo(
 				searchManager.getSearchableInfo(getComponentName()));
 		searchView.setOnQueryTextListener(new OnQueryTextListener() { 
@@ -78,12 +78,12 @@ public class SearchResultsActivity extends Activity implements LoaderCallbacks<C
 			@Override 
 			public boolean onQueryTextChange(String querytext) {
 				query = querytext;
-				if(i==0)
+				if(i==0){
 					getLoaderManager().initLoader(LOADER, null, SearchResultsActivity.this);
-				else
-					getLoaderManager().restartLoader(LOADER, null, SearchResultsActivity.this);	
+					i=1;
+				}else
+					getLoaderManager().restartLoader(LOADER, null, SearchResultsActivity.this);
 
-				i=1;
 				return true; 
 			}
 
@@ -97,6 +97,7 @@ public class SearchResultsActivity extends Activity implements LoaderCallbacks<C
 		});
 		return true;
 	}
+
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		switch(id){

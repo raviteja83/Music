@@ -9,15 +9,15 @@
         android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
         android:background="@android:color/white"
+        android:gravity="bottom"
         sothree:umanoPanelHeight="60dp"
         sothree:umanoShadowHeight="4dp" >
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <GridView
                 android:id="@+id/song_list"
@@ -32,11 +32,14 @@
                 android:verticalSpacing="10dp" />
 
             <ListView
-                android:id="@+id/song_listView"
+                android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:divider="@null"
+                android:dividerHeight="0dp"
                 android:visibility="gone" />
         </FrameLayout>
+
         <include layout="@layout/play_back" />
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
