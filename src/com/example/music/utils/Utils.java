@@ -4,7 +4,11 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.database.Cursor;
-import android.provider.MediaStore;
+import android.provider.BaseColumns;
+import android.provider.MediaStore.Audio.AlbumColumns;
+import android.provider.MediaStore.Audio.ArtistColumns;
+import android.provider.MediaStore.Audio.AudioColumns;
+import android.provider.MediaStore.MediaColumns;
 
 import com.example.music.activities.MainActivity;
 
@@ -18,15 +22,15 @@ public class Utils {
 		try{
 			if (mDataCursor != null && mDataCursor.moveToFirst() ) {
 				int albumColumn = mDataCursor
-						.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+						.getColumnIndex(AudioColumns.ALBUM);
 				int idColumn = mDataCursor
-						.getColumnIndex(MediaStore.Audio.Media._ID);
+						.getColumnIndex(BaseColumns._ID);
 				int artistColumn = mDataCursor
-						.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+						.getColumnIndex(AudioColumns.ARTIST);
 				int titleColumn = mDataCursor
-						.getColumnIndex(MediaStore.Audio.Media.TITLE);
+						.getColumnIndex(MediaColumns.TITLE);
 				int durColumn = mDataCursor
-						.getColumnIndex(MediaStore.Audio.Media.DURATION);
+						.getColumnIndex(AudioColumns.DURATION);
 				do {
 					long thisId = mDataCursor.getLong(idColumn);
 					String thisTitle = mDataCursor.getString(titleColumn);
@@ -44,13 +48,13 @@ public class Utils {
 		try{
 			if (mDataCursor != null && mDataCursor.moveToFirst() ) {
 				int titleColumn = mDataCursor
-						.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM);
+						.getColumnIndex(AlbumColumns.ALBUM);
 				int idColumn = mDataCursor
-						.getColumnIndex(android.provider.MediaStore.Audio.Albums._ID);
+						.getColumnIndex(BaseColumns._ID);
 				int artistColumn = mDataCursor
-						.getColumnIndex(android.provider.MediaStore.Audio.Albums.ARTIST);
+						.getColumnIndex(AlbumColumns.ARTIST);
 				int albumArt = mDataCursor
-						.getColumnIndex(android.provider.MediaStore.Audio.Albums.ALBUM_ART);
+						.getColumnIndex(AlbumColumns.ALBUM_ART);
 
 				do {
 					long thisId = mDataCursor.getLong(idColumn);
@@ -69,9 +73,9 @@ public class Utils {
 			if (mDataCursor != null && mDataCursor.moveToFirst() ) {
 
 				int idColumn = mDataCursor
-						.getColumnIndex(android.provider.MediaStore.Audio.Artists._ID);
+						.getColumnIndex(BaseColumns._ID);
 				int artistColumn = mDataCursor
-						.getColumnIndex(android.provider.MediaStore.Audio.Artists.ARTIST);
+						.getColumnIndex(ArtistColumns.ARTIST);
 
 				do {
 					long thisId = mDataCursor.getLong(idColumn);

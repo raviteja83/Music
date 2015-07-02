@@ -7,7 +7,8 @@ import android.view.View;
 public class DepthPageTransformer implements PageTransformer {
 
 	private static float MIN_SCALE = 0.75f;
-    public void transformPage(View v, float position) {
+    @Override
+	public void transformPage(View v, float position) {
         View view = v.findViewById(R.id.mp3Image);
     	int pageWidth = view.getWidth();
         

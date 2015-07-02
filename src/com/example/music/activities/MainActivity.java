@@ -18,8 +18,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Audio.Media;
+import android.provider.MediaStore.Audio.AlbumColumns;
+import android.provider.MediaStore.Audio.ArtistColumns;
+import android.provider.MediaStore.Audio.AudioColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -29,7 +33,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -210,6 +213,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 	}
 
 	private static Runnable updateSeekBarTime = new Runnable() {
+		@Override
 		public void run(){
 			try{
 				if(musicBound && musicSrv.isPng()){
@@ -259,7 +263,6 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		 * fragment.
 		 */
 		private static final String ARG_SECTION_NUMBER = "section_number";
-		private static final String TAG = "DemoActivity";
 		private MyCursorAdapter mAdapter;
 		private static int selection;
 		private MyProgressDialog bar;
@@ -286,6 +289,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 			bar.show();
 			setRetainInstance(true);
 		}
+		@SuppressWarnings("deprecation")
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -394,12 +398,10 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 
 				@Override
 				public void onPanelAnchored(View panel) {
-					Log.i(TAG, "onPanelAnchored");
 				}
 
 				@Override
 				public void onPanelHidden(View panel) {
-					Log.i(TAG, "onPanelHidden");
 				}
 			});
 			songView = (GridView) rootView.findViewById(R.id.song_list);
@@ -410,7 +412,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 			case 1:
 				list.setVisibility(View.VISIBLE);
 				songView.setVisibility(View.GONE);
-				String[] mFromColumns={ MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM };
+				String[] mFromColumns={ MediaColumns.TITLE,AudioColumns.ALBUM };
 				mAdapter = new MyCursorAdapter(getActivity(), //current context
 						R.layout.list_item,  // Layout for a single row
 						null,                // No Cursor yet
@@ -429,8 +431,8 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 				});
 				break;
 			case 2:
-				String[] mFromAlbumColumns ={MediaStore.Audio.Albums.ALBUM,
-						MediaStore.Audio.Albums.ARTIST};
+				String[] mFromAlbumColumns ={AlbumColumns.ALBUM,
+						AlbumColumns.ARTIST};
 				mAdapter = new MyCursorAdapter(getActivity(), //current context
 						R.layout.song,  // Layout for a single row
 						null,                // No Cursor yet
@@ -451,8 +453,8 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 				});
 				break;
 			case 3:
-				String[] mFromArtistColumns = {MediaStore.Audio.Artists.ARTIST
-						,MediaStore.Audio.Artists.NUMBER_OF_ALBUMS};
+				String[] mFromArtistColumns = {ArtistColumns.ARTIST
+						,ArtistColumns.NUMBER_OF_ALBUMS};
 				mAdapter = new MyCursorAdapter(getActivity(), //current context
 						R.layout.song,  // Layout for a single row
 						null,                // No Cursor yet
@@ -486,9 +488,9 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 			switch (id) {
 			case 1:
 				Uri mDataUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-				String[] mProjection = {MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM,MediaStore.Audio.Media.ARTIST,
-						MediaStore.Audio.Media._ID,MediaStore.Audio.Media.DURATION,MediaStore.Audio.Media.ALBUM_ID};
-				String SortOrder = Media.TITLE + " ASC";
+				String[] mProjection = {MediaColumns.TITLE,AudioColumns.ALBUM,AudioColumns.ARTIST,
+						BaseColumns._ID,AudioColumns.DURATION,AudioColumns.ALBUM_ID};
+				String SortOrder = MediaColumns.TITLE + " ASC";
 				// Returns a new CursorLoader
 				return new CursorLoader(
 						getActivity(),   // Parent activity context
@@ -500,9 +502,9 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 						);
 			case 2:
 				Uri mAlbumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-				String[] mAlbumProjection = {MediaStore.Audio.Albums.ARTIST,MediaStore.Audio.Albums.ALBUM,
-						MediaStore.Audio.Albums.ALBUM_ART,MediaStore.Audio.Albums._ID};
-				String AlbumSortOrder = Media.ALBUM + " ASC";
+				String[] mAlbumProjection = {AlbumColumns.ARTIST,AlbumColumns.ALBUM,
+						AlbumColumns.ALBUM_ART,BaseColumns._ID};
+				String AlbumSortOrder = AudioColumns.ALBUM + " ASC";
 				// Returns a new CursorLoader
 				return new CursorLoader(
 						getActivity(),   // Parent activity context
@@ -514,9 +516,9 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 						);
 			case 3:
 				Uri mArtistUri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
-				String[] mArtistProjection = {MediaStore.Audio.Artists.ARTIST,MediaStore.Audio.Artists._ID,
-						MediaStore.Audio.Artists.NUMBER_OF_ALBUMS};
-				String mArtistSortOrder = Media.ARTIST + " ASC";
+				String[] mArtistProjection = {ArtistColumns.ARTIST,BaseColumns._ID,
+						ArtistColumns.NUMBER_OF_ALBUMS};
+				String mArtistSortOrder = AudioColumns.ARTIST + " ASC";
 				// Returns a new CursorLoader
 				return new CursorLoader(
 						getActivity(),   // Parent activity context
@@ -535,6 +537,7 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		public void onLoadFinished(Loader<Cursor> arg0,final Cursor arg1){
 			Handler handler = new Handler(); 
 			handler.postDelayed(new Runnable() { 
+				@Override
 				public void run() {
 					if(bar.isShowing())
 						bar.dismiss();

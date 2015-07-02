@@ -2,7 +2,8 @@ package com.example.music.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.provider.MediaStore.Audio.AudioColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,8 +59,8 @@ public class FooterFragment extends Fragment{
 				}
 			}	
 		});
-		title.setText(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
-		artist.setText(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+		title.setText(cursor.getString(cursor.getColumnIndex(MediaColumns.TITLE)));
+		artist.setText(cursor.getString(cursor.getColumnIndex(AudioColumns.ARTIST)));
 		Picasso.with(getActivity())
 		.load(SongList.imageUri)
 		.resize(200,200)

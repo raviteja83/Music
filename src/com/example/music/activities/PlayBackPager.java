@@ -178,6 +178,7 @@ public class PlayBackPager extends FragmentActivity implements OnClickListener{
 	}
 
 	private static Runnable updateSeekBarTime = new Runnable() {
+		@Override
 		public void run(){
 			try{
 				if(MainActivity.musicBound && MainActivity.musicSrv.isPng()){

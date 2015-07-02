@@ -13,7 +13,11 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Audio.AlbumColumns;
+import android.provider.MediaStore.Audio.AudioColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.widget.RemoteViews;
 
 import com.example.music.R;
@@ -40,6 +44,7 @@ MediaPlayer.OnCompletionListener {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		return Service.START_NOT_STICKY;
 	}
+	@Override
 	public void onCreate() {
 		// create the service
 		super.onCreate();
@@ -117,15 +122,15 @@ MediaPlayer.OnCompletionListener {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
                 new Intent("NOTIF_PLAY_ALBUM"), 0);
 		remoteViews.setOnClickPendingIntent(R.id.media_play_thumb, pendingIntent);
-		remoteViews.setTextViewText(R.id.song_title_bottom, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
-		remoteViews.setTextViewText(R.id.song_artist_bottom, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+		remoteViews.setTextViewText(R.id.song_title_bottom, cursor.getString(cursor.getColumnIndex(MediaColumns.TITLE)));
+		remoteViews.setTextViewText(R.id.song_artist_bottom, cursor.getString(cursor.getColumnIndex(AudioColumns.ARTIST)));
 		try {
-			String album =  cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-			String[] proj = { MediaStore.Audio.Albums.ALBUM_ART,MediaStore.Audio.Albums._ID };
-			String selection =  MediaStore.Audio.Albums._ID + " =? or "+  MediaStore.Audio.Albums.ALBUM + " =? " ;
+			String album =  cursor.getString(cursor.getColumnIndex(AudioColumns.ALBUM));
+			String[] proj = { AlbumColumns.ALBUM_ART,BaseColumns._ID };
+			String selection =  BaseColumns._ID + " =? or "+  AlbumColumns.ALBUM + " =? " ;
 			String[] selectionArgs = {String.valueOf(songId),album};
 			Cursor cur =getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,  proj, selection, selectionArgs, null);
-			int column_index = cur.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ART);
+			int column_index = cur.getColumnIndexOrThrow(AlbumColumns.ALBUM_ART);
 			cur.moveToFirst();
 			Picasso.with(getApplicationContext())
 			.load(Uri.parse("file:///"+cur.getString(column_index)))
@@ -151,7 +156,7 @@ MediaPlayer.OnCompletionListener {
 		cur.moveToFirst();
 		cur.move(songPosn);
 		try {
-			songId = cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media._ID));
+			songId = cur.getLong(cur.getColumnIndex(BaseColumns._ID));
 			Uri trackUri = ContentUris.withAppendedId(
 					android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
 					songId);
@@ -160,7 +165,7 @@ MediaPlayer.OnCompletionListener {
 			if(MainActivity.musicSrv.isPng())
 				MainActivity.musicSrv.pausePlayer();
 			timeElapsed = getPosn();
-			finalTime =cur.getLong(cur.getColumnIndex(MediaStore.Audio.Media.DURATION));
+			finalTime =cur.getLong(cur.getColumnIndex(AudioColumns.DURATION));
 			SongList.playback.setMax((int)finalTime);
 			durationHandler.postDelayed(SongList.updateSeekBarTime, 1000);
 		} catch (Exception e) {

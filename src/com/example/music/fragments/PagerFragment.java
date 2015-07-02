@@ -5,7 +5,9 @@ import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Audio.AlbumColumns;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,11 +58,11 @@ public class PagerFragment extends Fragment{
 	}
 
 	private void setAlbumart(String album) {
-		String[] proj = { MediaStore.Audio.Albums.ALBUM_ART,MediaStore.Audio.Albums._ID };
-		String selection =  MediaStore.Audio.Albums.ALBUM + " =? " ;
+		String[] proj = { AlbumColumns.ALBUM_ART,BaseColumns._ID };
+		String selection =  AlbumColumns.ALBUM + " =? " ;
 		String[] selectionArgs = {album};
 		Cursor cursor = getActivity().getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,  proj, selection, selectionArgs, null);
-		int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ART);
+		int column_index = cursor.getColumnIndexOrThrow(AlbumColumns.ALBUM_ART);
 		cursor.moveToFirst();
 		Picasso.with(getActivity())
 		.load(Uri.parse("file:///"+cursor.getString(column_index)))

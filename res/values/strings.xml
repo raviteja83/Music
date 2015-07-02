@@ -11,5 +11,9 @@
     <string name="search">Search</string>
     <string name="todo">TODO</string>
     <string name="title_activity_search_results">SearchResultsActivity</string>
+    <string name="title_activity_tab">TabActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_tabbed_main">TabbedMainActivity</string>
 
 </resources>

@@ -18,10 +18,6 @@ public class MyFragmentAdapter  extends FragmentStatePagerAdapter  {
 	}
 
 	@Override
-	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
-	}
-	@Override
 	public Fragment getItem(int pos) {
 		return PagerFragment.newInstance(pos);
 	}

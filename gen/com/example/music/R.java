@@ -372,11 +372,15 @@ containing a value of this type.
     }
     public static final class string {
         public static final int action_example=0x7f090006;
+        public static final int action_settings=0x7f09000c;
         public static final int app_name=0x7f090000;
+        public static final int hello_world=0x7f09000b;
         public static final int navigation_drawer_close=0x7f090005;
         public static final int navigation_drawer_open=0x7f090004;
         public static final int search=0x7f090007;
         public static final int title_activity_search_results=0x7f090009;
+        public static final int title_activity_tab=0x7f09000a;
+        public static final int title_activity_tabbed_main=0x7f09000d;
         public static final int title_section1=0x7f090002;
         public static final int title_section2=0x7f090001;
         public static final int title_section3=0x7f090003;

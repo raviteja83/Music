@@ -19,7 +19,9 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Audio.AlbumColumns;
 import android.widget.RemoteViews;
 
 import com.example.music.R;
@@ -54,6 +56,7 @@ MediaPlayer.OnCompletionListener {
 		registerReceiver(receiver, filter);
 		return Service.START_NOT_STICKY;
 	}
+	@Override
 	public void onCreate() {
 		// create the service
 		super.onCreate();
@@ -146,11 +149,11 @@ MediaPlayer.OnCompletionListener {
 		remoteViews.setTextViewText(R.id.song_title_bottom, songTitle);
 		remoteViews.setTextViewText(R.id.song_artist_bottom, songs.get(songPosn).getArtist());
 		try{
-			String[] proj = { MediaStore.Audio.Albums.ALBUM_ART,MediaStore.Audio.Albums._ID };
-			String selection = MediaStore.Audio.Albums.ALBUM + " =? " ;
+			String[] proj = { AlbumColumns.ALBUM_ART,BaseColumns._ID };
+			String selection = AlbumColumns.ALBUM + " =? " ;
 			String[] selectionArgs = {songs.get(songPosn).getAlbum()};
 			Cursor cur = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,  proj, selection, selectionArgs, null);
-			int column_index = cur.getColumnIndexOrThrow(MediaStore.Audio.Albums.ALBUM_ART);
+			int column_index = cur.getColumnIndexOrThrow(AlbumColumns.ALBUM_ART);
 			cur.moveToFirst();
 			if(cur.getCount()<=0){
 				Picasso.with(getApplicationContext())

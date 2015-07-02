@@ -11,7 +11,10 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Audio.AudioColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -45,7 +48,7 @@ public class SearchResultsActivity extends Activity implements LoaderCallbacks<C
 
 		list = (GridView)findViewById(R.id.song_list);
 		empty = (TextView)findViewById(android.R.id.empty);
-		String[] mFromColumns={ MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM };
+		String[] mFromColumns={ MediaColumns.TITLE,AudioColumns.ALBUM };
 		int[] mToFields = {R.id.song_title,R.id.song_artist};
 		mAdapter = new MySearchAdapter(this, //current context
 				R.layout.song,  // Layout for a single row
@@ -101,8 +104,8 @@ public class SearchResultsActivity extends Activity implements LoaderCallbacks<C
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		switch(id){
 		case LOADER:
-			String[] proj = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.ALBUM,MediaStore.Audio.Media.DATA};
-			String selection =  MediaStore.Audio.Media.TITLE + " LIKE ? or "+ MediaStore.Audio.Media.ALBUM + " LIKE ? or "+MediaStore.Audio.Media.ARTIST + " LIKE ? " ;
+			String[] proj = {BaseColumns._ID, MediaColumns.TITLE,AudioColumns.ARTIST,AudioColumns.ALBUM,MediaColumns.DATA};
+			String selection =  MediaColumns.TITLE + " LIKE ? or "+ AudioColumns.ALBUM + " LIKE ? or "+AudioColumns.ARTIST + " LIKE ? " ;
 			String[] selectionArgs = {"%"+query+"%","%"+query+"%","%"+query+"%"};
 			return new CursorLoader(this,
 					MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj, selection, selectionArgs, null);

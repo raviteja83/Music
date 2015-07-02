@@ -13,7 +13,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.MediaStore;
+import android.provider.BaseColumns;
+import android.provider.MediaStore.Audio.AudioColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -83,9 +85,9 @@ public class SongList extends FragmentActivity{
 		getActionBar().setDisplayShowTitleEnabled(false);
 		ImageView headerView = (ImageView) ((LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.list_header, null, false);
 		list.addHeaderView(headerView);
-		String[] mFromColumns ={MediaStore.Audio.Media.TITLE,
-				MediaStore.Audio.Media.ARTIST,
-				MediaStore.Audio.Media.DURATION};
+		String[] mFromColumns ={MediaColumns.TITLE,
+				AudioColumns.ARTIST,
+				AudioColumns.DURATION};
 		int[] mToFields = {
 				R.id.album_song_title,
 				R.id.album_song_artist,
@@ -101,9 +103,9 @@ public class SongList extends FragmentActivity{
 		.placeholder(R.drawable.image_loader)
 		.into(headerView);
 		Uri mDataUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		String[] mProjection = {MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM,
-				MediaStore.Audio.Media._ID,MediaStore.Audio.Media.DURATION};
-		String selection = 	android.provider.MediaStore.Audio.Media.ALBUM + " =? ";
+		String[] mProjection = {AudioColumns.ARTIST,MediaColumns.TITLE,AudioColumns.ALBUM,
+				BaseColumns._ID,AudioColumns.DURATION};
+		String selection = 	AudioColumns.ALBUM + " =? ";
 		String[] selectionArgs = new String[]{album};
 		cursor = getContentResolver().query( 
 				mDataUri,        // Table to query
@@ -142,7 +144,7 @@ public class SongList extends FragmentActivity{
 			public void onClick(View v) {
 				cursor.moveToFirst();
 				cursor.move(footer.getCurrentItem());
-				String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+				String title = cursor.getString(cursor.getColumnIndex(MediaColumns.TITLE));
 				System.out.println(MainActivity.songList.indexOf(title));
 
 			}
@@ -178,6 +180,7 @@ public class SongList extends FragmentActivity{
 	}
 
 	public static Runnable updateSeekBarTime = new Runnable() {
+		@Override
 		public void run(){
 			try{
 				if(musicBound && musicSrv.isPng()){
